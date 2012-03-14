@@ -1,0 +1,36 @@
+<?php
+
+/*
+ * CLI report.
+ */
+$cli = new \mageekguy\atoum\reports\realtime\cli();
+
+/*
+ * Xunit report
+ */
+$xunit = new \mageekguy\atoum\reports\asynchronous\xunit();
+
+/*
+ * stdout Writer
+ */
+$stdOutWriter = new \mageekguy\atoum\writers\std\out();
+
+/*
+ * File writer
+ */
+$fileWriter = new \mageekguy\atoum\writers\file(__DIR__.'/build/logs/junit.xml');
+
+
+/*
+ * Clover xml coverage
+ */
+require_once __DIR__.'/Xml.php';
+$coverageField = new \jubianchi\atoum\report\fields\runner\coverage\Xml('Boomgo', __DIR__.'/build/logs/clover.xml');
+
+$cli->addWriter($stdOutWriter);
+$cli->addField($coverageField, array(\mageekguy\atoum\runner::runStop));
+$xunit->addWriter($fileWriter);
+
+$runner->addReport($xunit);
+$runner->addReport($cli);
+$runner->setBootstrapFile(__DIR__.'/tests/Boomgo/Tests/bootstrap.php');
