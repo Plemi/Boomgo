@@ -24,7 +24,7 @@
         "cedriclombardot/twig-generator": "dev-master"
     },
     "suggest": {
-        "mageekguy/atoum": "dev-master"
+        "mageekguy/atoum": "dev-xunit"
     },
     "autoload": {
         "psr-0": { "Boomgo": "src/" }
