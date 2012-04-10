@@ -3,34 +3,30 @@
 /*
  * CLI report.
  */
+$stdOutWriter = new \mageekguy\atoum\writers\std\out();
 $cli = new \mageekguy\atoum\reports\realtime\cli();
+$cli->addWriter($stdOutWriter);
 
 /*
  * Xunit report
  */
+$xunitWriter = new \mageekguy\atoum\writers\file(__DIR__.'/build/logs/junit.xml');
 $xunit = new \mageekguy\atoum\reports\asynchronous\xunit();
-
-/*
- * stdout Writer
- */
-$stdOutWriter = new \mageekguy\atoum\writers\std\out();
-
-/*
- * File writer
- */
-$fileWriter = new \mageekguy\atoum\writers\file(__DIR__.'/build/logs/junit.xml');
-
+$xunit->addWriter($xunitWriter);
 
 /*
  * Clover xml coverage
  */
-require_once __DIR__.'/Xml.php';
-$coverageField = new \jubianchi\atoum\report\fields\runner\coverage\Xml('Boomgo', __DIR__.'/build/logs/clover.xml');
+$cloverWriter = new \mageekguy\atoum\writers\file(__DIR__.'/build/logs/clover.xml');
+$clover = new \mageekguy\atoum\reports\asynchronous\clover();
+$clover->addWriter($cloverWriter);
 
-$cli->addWriter($stdOutWriter);
-$cli->addField($coverageField, array(\mageekguy\atoum\runner::runStop));
-$xunit->addWriter($fileWriter);
+/*
+ * Html coverage
+ */
+$html = new \mageekguy\atoum\report\fields\runner\coverage\html('Boomgo',  __DIR__.'/build/coverage');
+$cli->addField($html, array(\mageekguy\atoum\runner::runStop));
 
+$runner->addReport($clover);
 $runner->addReport($xunit);
 $runner->addReport($cli);
-$runner->setBootstrapFile(__DIR__.'/tests/Boomgo/Tests/bootstrap.php');

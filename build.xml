@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="Boomgo" default="build">
-  <target name="build" depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,docblox,atoum"/>
+  <target name="build" depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpDocumentor,atoum"/>
   <target name="build-parallel" depends="prepare,lint,tools-parallel,atoum"/>
   <target name="tools-parallel" description="Run tools in parallel">
     <parallel threadCount="2">
@@ -12,7 +12,7 @@
         <antcall target="phpcpd"/>
         <antcall target="phpcs-ci"/>
         <antcall target="phploc"/>
-        <antcall target="docblox"/>
+        <antcall target="phpDocumentor"/>
     </parallel>
   </target>
   <target name="clean" description="Cleanup build artifacts">
@@ -121,16 +121,15 @@
     </exec>
   </target>
   <target name="atoum" description="Run unit tests with Atoum">
-    <exec executable="php" failonerror="false">
-      <arg value="vendor/bin/atoum" />
-      <arg value="-c" />
-      <arg value=".atoum.php.ci" />
+    <exec executable="bin/atoum" failonerror="false">
+      <arg line="--configuration-files .atoum.php.ci" />
+      <arg line="--bootstrap-file tests/Boomgo/Tests/bootstrap.php" />
       <arg value="-d" />
       <arg value="tests" />
     </exec>
   </target>
-  <target name="docblox" description="Generate code documentation with DocBlox">
-    <exec executable="docblox">
+  <target name="phpDocumentor" description="Generate code documentation with phpDocumentor">
+    <exec executable="phpdoc">
       <arg value="--directory" />
       <arg value="${basedir}" />
       <arg value="--target" />
