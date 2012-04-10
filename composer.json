@@ -25,7 +25,7 @@
         "cedriclombardot/twig-generator": "dev-master"
     },
     "suggest": {
-        "mageekguy/atoum": "dev-clover-xunit",
+        "mageekguy/atoum": "dev-clover-xunit"
     },
     "repositories": [
         {
