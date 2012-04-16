@@ -21,6 +21,7 @@ use Boomgo\Parser\ParserInterface;
  * MapBuilder
  *
  * @author Ludovic Fleury <ludo.fleury@gmail.com>
+ * @author David Guyon <dguyon@gmail.com>
  */
 class MapBuilder
 {
@@ -35,6 +36,16 @@ class MapBuilder
     protected $formatter;
 
     /**
+     * @var string
+     */
+    protected $mapClassName;
+
+    /**
+     * @var string
+     */
+    protected $definitionClassName;
+
+    /**
      * Constructor defines the Parser & Formatter
      *
      * @param ParserInterface    $parser
@@ -44,12 +55,14 @@ class MapBuilder
     {
         $this->setParser($parser);
         $this->setFormatter($formatter);
+        $this->mapClassName = 'Boomgo\\Builder\\Map';
+        $this->definitionClassName = 'Boomgo\\Builder\\Definition';
     }
 
     /**
      * Define the parser instance
      *
-     * @param ParserInterface $parser [description]
+     * @param ParserInterface $parser
      */
     public function setParser(ParserInterface $parser)
     {
@@ -87,6 +100,46 @@ class MapBuilder
     }
 
     /**
+     * Define the map classname
+     * 
+     * @param string $mapClassName
+     */
+    public function setMapClassName($mapClassName)
+    {
+        $this->mapClassName = $mapClassName;
+    }
+
+    /**
+     * Return the map classname
+     * 
+     * @return string
+     */
+    public function getMapClassName()
+    {
+        return $this->mapClassName;
+    }
+
+    /**
+     * Define the definition classname
+     * 
+     * @param string $definitionClassName
+     */
+    public function setDefinitionClassName($definitionClassName)
+    {
+        $this->definitionClassName = $definitionClassName;
+    }
+
+    /**
+     * Return the definition classname
+     * 
+     * @return string
+     */
+    public function getDefinitionClassName()
+    {
+        return $this->definitionClassName;
+    }
+
+    /**
      * Build Map(s) for an array of file
      *
      * @param array $files
@@ -116,9 +169,10 @@ class MapBuilder
      *
      * @return Map
      */
-    private function buildMap(array $metadata)
+    protected function buildMap(array $metadata)
     {
-        $map = new Map($metadata['class']);
+        $className = $this->getMapClassName();
+        $map = new $className($metadata['class']);
 
         foreach ($metadata['definitions'] as $metadataDefinition) {
             $definition = $this->buildDefinition($metadataDefinition);
@@ -135,7 +189,7 @@ class MapBuilder
      *
      * @return Definition
      */
-    private function buildDefinition(array $metadata)
+    protected function buildDefinition(array $metadata)
     {
         if (!isset($metadata['attribute']) && !isset($metadata['key'])) {
             throw new \RuntimeException('Invalid metadata should provide an attribute or a key');
@@ -151,6 +205,9 @@ class MapBuilder
         $metadata['accessor'] = $this->formatter->getPhpAccessor($metadata['attribute']);
         $metadata['mutator'] = $this->formatter->getPhpMutator($metadata['attribute']);
 
-        return new Definition($metadata);
+        $className = $this->getDefinitionClassName();
+        $definition = new $className($metadata);
+
+        return $definition;
     }
 }

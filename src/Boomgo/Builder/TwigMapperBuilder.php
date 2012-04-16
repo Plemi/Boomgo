@@ -20,8 +20,9 @@ use TwigGenerator\Builder\BaseBuilder;
  * MapperBuilder
  *
  * @author Ludovic Fleury <ludo.fleury@gmail.com>
+ * @author David Guyon <dguyon@gmail.com>
  */
-class MapperBuilder extends BaseBuilder
+class TwigMapperBuilder extends BaseBuilder
 {
     /**
      * {@inheritdoc}
@@ -30,6 +31,6 @@ class MapperBuilder extends BaseBuilder
      */
     public function getDefaultTemplateName()
     {
-        return 'Mapper' . self::TWIG_EXTENSION;
+        return 'Mapper'.self::TWIG_EXTENSION;
     }
 }
